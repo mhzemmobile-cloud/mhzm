@@ -146,9 +146,10 @@
         .terms-box {
             margin-bottom: 30px;
         }
-        .terms-box h4 { margin-bottom: 10px; text-decoration: underline; }
+        .terms-box h4 { margin-bottom: 15px; text-decoration: underline; font-size: 1.1rem; }
         .terms-box ol { padding-right: 20px; }
-        .terms-box li { margin-bottom: 5px; text-align: justify; }
+        /* Spacing for screen view */
+        .terms-box li { margin-bottom: 10px; text-align: justify; }
 
         /* --- Signature Area --- */
         .sig-input-area {
@@ -184,7 +185,7 @@
         }
 
         /* =========================================
-           3. PRINT MEDIA QUERY (Crucial)
+           3. PRINT MEDIA QUERY (Adjusted for 2 Pages)
            ========================================= */
         @media print {
             body { 
@@ -217,12 +218,33 @@
                 border: none !important;
                 padding: 0 !important;
                 background: transparent !important;
+                /* Increased font size for print to naturally fill more space */
+                font-size: 15px !important; 
+                line-height: 1.8 !important;
+            }
+
+            /* Spacing adjustments to force 2 pages nicely */
+            .info-grid { 
+                border: 1px solid #ccc !important; 
+                background: none !important;
+                margin-bottom: 40px !important; /* Push text down */
+            }
+            
+            .terms-box h4 {
+                font-size: 1.3rem !important;
+                margin-bottom: 20px !important;
+            }
+
+            .terms-box li { 
+                /* High margin ensures the list takes up 1.5 pages */
+                margin-bottom: 20px !important; 
+                padding-bottom: 5px !important;
             }
             
             /* Ensure Stamp and Text are visible */
-            .stamp-container { display: block !important; page-break-inside: avoid; }
-            .info-grid { border: 1px solid #ccc !important; background: none !important; }
-            li, p, h3, h4 { color: #000 !important; }
+            .stamp-container { display: block !important; page-break-inside: avoid; margin-top: 50px !important; }
+            
+            li, p, h3, h4, span, b, div { color: #000 !important; }
         }
     </style>
 </head>
