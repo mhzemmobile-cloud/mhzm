@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة عقود محزم | Mhzm Contracts</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -47,7 +47,7 @@
             position: relative;
         }
 
-        /* --- Header --- */
+        /* --- Header (Screen Only) --- */
         .header {
             background: #fff;
             padding: 15px;
@@ -101,6 +101,7 @@
         }
         .btn:hover { background: var(--primary-dark); }
         .btn-print { background: #28a745; margin-bottom: 20px; font-size: 1.2rem; }
+        .btn-shorten { background: #666; margin-top: 10px; font-size: 0.9rem; }
 
         /* =========================================
            2. CONTRACT PAPER STYLE (The Document)
@@ -113,18 +114,20 @@
             line-height: 1.6;
             font-size: 14px;
             border: 1px solid #ccc;
+            position: relative;
         }
 
+        /* Header for Print */
         .contract-header-print {
             text-align: center;
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .contract-logo-print {
             height: 90px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: block;
             margin-left: auto;
             margin-right: auto;
@@ -132,34 +135,48 @@
 
         .shop-info-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: #000;
         }
-        .shop-info-header h3 { margin-bottom: 5px; font-weight: 900; font-size: 1.4rem; }
-        .shop-info-header p { margin: 2px 0; font-size: 0.9rem; }
+        .shop-info-header h3 { margin-bottom: 5px; font-weight: 900; font-size: 1.6rem; color: var(--primary); }
+        .shop-info-header p { margin: 3px 0; font-size: 0.95rem; font-weight: 600; }
 
+        /* Data Grid */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 25px;
-            background: #f9f9f9;
+            margin-bottom: 30px;
+            background: #fcfcfc;
             padding: 20px;
-            border: 1px solid #eee;
+            border: 2px solid #eee;
             border-radius: 8px;
         }
-        .info-item { font-size: 0.95rem; }
-        .info-item b { display: block; color: #000; font-size: 1.05rem; }
+        .info-item { font-size: 1rem; padding-bottom: 5px; border-bottom: 1px dashed #eee; }
+        .info-item b { display: inline-block; min-width: 120px; color: #000; font-weight: 800; }
+        .info-item span { color: #333; }
 
+        /* Terms List - Professional Styling */
         .terms-box {
             margin-bottom: 30px;
         }
-        .terms-box h4 { margin-bottom: 15px; text-decoration: underline; font-size: 1.1rem; }
-        .terms-box ol { padding-right: 20px; }
-        /* Spacing for screen view */
-        .terms-box li { margin-bottom: 10px; text-align: justify; }
+        .terms-box h4 { 
+            margin-bottom: 15px; 
+            text-decoration: underline; 
+            font-size: 1.2rem; 
+            font-weight: 800;
+        }
+        .terms-box ol { 
+            padding-right: 25px; 
+            text-align: justify; /* Professional Look */
+        }
+        .terms-box li { 
+            margin-bottom: 12px; 
+            line-height: 1.8;
+            font-weight: 500;
+        }
 
-        /* --- Signature Area --- */
+        /* Signature Area */
         .sig-input-area {
             background: #f1f1f1;
             padding: 20px;
@@ -171,16 +188,16 @@
             background: #fff; color: #000; border: 1px solid #ccc; text-align: center; font-size: 1.2rem;
         }
 
-        /* --- Digital Stamp --- */
+        /* Stamp */
         .stamp-container {
-            display: none; /* Hidden by default until signed */
-            margin-top: 40px;
+            display: none;
+            margin-top: 50px;
             text-align: center;
             width: 100%;
         }
         .stamp-seal {
             width: 160px; height: 160px;
-            border: 4px solid var(--primary);
+            border: 5px solid var(--primary);
             border-radius: 50%;
             margin: 0 auto 10px;
             color: var(--primary);
@@ -192,66 +209,57 @@
             box-shadow: 0 0 0 5px rgba(255,255,255,1);
         }
 
+        /* Footer (Print Only) */
+        .print-footer {
+            display: none; /* Hidden on screen */
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            width: 100%;
+        }
+
         /* =========================================
-           3. PRINT MEDIA QUERY (Adjusted for 2 Pages)
+           3. PRINT MEDIA QUERY (Paper & PDF)
            ========================================= */
         @media print {
-            body { 
-                background: #fff !important; 
-                margin: 0 !important; 
-                padding: 0 !important; 
-                color: #000 !important;
-            }
+            body { background: #fff !important; margin: 0 !important; padding: 0 !important; color: #000 !important; }
             .container { 
-                box-shadow: none !important; 
-                border: none !important; 
-                width: 100% !important; 
-                max-width: 100% !important; 
-                margin: 0 !important;
-                background: #fff !important;
+                box-shadow: none !important; border: none !important; 
+                width: 100% !important; max-width: 100% !important; 
+                margin: 0 !important; background: #fff !important;
             }
             
             /* Hide UI Elements */
-            .header, .no-print, .btn, .section, #adminView, #authView, #successView { 
-                display: none !important; 
-            }
+            .header, .no-print, .btn, .section, #adminView, #authView, #successView { display: none !important; }
 
             /* Force Show Contract */
-            #contractView { 
-                display: block !important; 
-                padding: 0 !important; 
-                margin: 0 !important;
-            }
+            #contractView { display: block !important; padding: 0 !important; margin: 0 !important; }
             .contract-paper {
-                border: none !important;
-                padding: 0 !important;
+                border: none !important; padding: 0 !important;
                 background: transparent !important;
-                /* Increased font size for print to naturally fill more space */
-                font-size: 15px !important; 
-                line-height: 1.8 !important;
+                font-size: 14px !important; line-height: 1.6 !important;
             }
 
-            /* Spacing adjustments to force 2 pages nicely */
-            .info-grid { 
-                border: 1px solid #ccc !important; 
-                background: none !important;
-                margin-bottom: 40px !important; /* Push text down */
-            }
+            /* Layout Fixes */
+            .info-grid { border: 2px solid #000 !important; background: none !important; margin-bottom: 30px !important; }
+            .terms-box li { margin-bottom: 15px !important; } /* Space out for 2 pages */
             
-            .terms-box h4 {
-                font-size: 1.3rem !important;
-                margin-bottom: 20px !important;
+            /* Footer Visible on Print */
+            .print-footer {
+                display: block !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                background: #fff;
             }
 
-            .terms-box li { 
-                /* High margin ensures the list takes up 1.5 pages */
-                margin-bottom: 20px !important; 
-                padding-bottom: 5px !important;
-            }
+            /* Stamp Logic */
+            .stamp-container { display: block !important; page-break-inside: avoid; margin-top: 40px !important; }
             
-            /* Ensure Stamp and Text are visible */
-            .stamp-container { display: block !important; page-break-inside: avoid; margin-top: 50px !important; }
-            
+            /* Force Black Text */
             li, p, h3, h4, span, b, div { color: #000 !important; }
         }
     </style>
@@ -300,6 +308,8 @@
             </div>
 
             <button onclick="generateLink()" class="btn"><i class="fas fa-link"></i> إنشاء رابط العقد ونسخه</button>
+            <p style="color: #666; font-size: 0.8rem; margin-top: 10px; text-align: center;">* ملاحظة: الرابط طويل لأنه يحتوي على كامل بيانات العقد مشفرة لعدم وجود قاعدة بيانات.</p>
+            <button onclick="window.open('https://bitly.com', '_blank')" class="btn btn-shorten">فتح موقع Bit.ly لتقصير الرابط (اختياري)</button>
         </div>
 
         <div id="authView" class="section">
@@ -337,18 +347,18 @@
                 </div>
 
                 <div class="info-grid">
-                    <div class="info-item">اسم العميل: <b id="vName"></b></div>
-                    <div class="info-item">رقم الهوية: <b id="vID"></b></div>
-                    <div class="info-item">رقم الجوال: <b id="vPhone"></b></div>
-                    <div class="info-item">العنوان: <b id="vAddress"></b></div>
+                    <div class="info-item"><b>اسم العميل:</b> <span id="vName"></span></div>
+                    <div class="info-item"><b>رقم الهوية:</b> <span id="vID"></span></div>
+                    <div class="info-item"><b>رقم الجوال:</b> <span id="vPhone"></span></div>
+                    <div class="info-item"><b>العنوان:</b> <span id="vAddress"></span></div>
                     
-                    <div class="info-item">الجهاز: <b id="vDevice"></b></div>
-                    <div class="info-item">اللون: <b id="vColor"></b></div>
-                    <div class="info-item">الرقم التسلسلي: <b id="vIMEI"></b></div>
-                    <div class="info-item">يوم الاستحقاق: <b>يوم <span id="vDay"></span> من كل شهر</b></div>
+                    <div class="info-item"><b>الجهاز:</b> <span id="vDevice"></span></div>
+                    <div class="info-item"><b>اللون:</b> <span id="vColor"></span></div>
+                    <div class="info-item"><b>الرقم التسلسلي:</b> <span id="vIMEI"></span></div>
+                    <div class="info-item"><b>الاستحقاق الشهري:</b> يوم <span id="vDay"></span></div>
 
-                    <div class="info-item" style="grid-column: span 2; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 5px;">
-                        تفاصيل السداد: إجمالي <b><span id="vTotal"></span> ريال</b> / قسط شهري <b><span id="vMonthly"></span> ريال</b>
+                    <div class="info-item" style="grid-column: span 2; border-top: 2px dashed #ddd; padding-top: 10px; margin-top: 5px;">
+                        <b>تفاصيل السداد:</b> إجمالي <b><span id="vTotal"></span> ريال</b> &nbsp;/&nbsp; قسط شهري <b><span id="vMonthly"></span> ريال</b>
                     </div>
                 </div>
 
@@ -385,6 +395,11 @@
                     <p>التوقيع الإلكتروني: <b id="finalSigName" style="font-family: 'Courier New';"></b></p>
                     <p style="font-size: 0.8rem; color: #555;">IP Verified Signature</p>
                 </div>
+
+                <div class="print-footer">
+                    <p>متجر محزم للاتصالات - المملكة العربية السعودية - البريد الإلكتروني: info@mhzm.sa</p>
+                    <p>عنوان الوثيقة الإلكتروني: Mhzm-Contract-Sys-v1.0</p>
+                </div>
             </div>
         </div>
 
@@ -408,63 +423,57 @@
 
         // --- 2. Initialization ---
         const params = new URLSearchParams(window.location.search);
-        const cParam = params.get('c'); // Contract Data
-        const sParam = params.get('s'); // Signature Data
+        const cParam = params.get('c'); 
+        const sParam = params.get('s'); 
 
         // Load Cached Telegram Credentials
         if(localStorage.getItem('mhzm_tk')) document.getElementById('botToken').value = localStorage.getItem('mhzm_tk');
         if(localStorage.getItem('mhzm_id')) document.getElementById('chatId').value = localStorage.getItem('mhzm_id');
 
-        // Determine which view to show
+        // Determine View
         if (cParam && sParam) {
-            // Case A: Admin viewing a signed contract
             renderContract(cParam, sParam);
         } else if (cParam) {
-            // Case B: Client needs to login
             document.getElementById('authView').classList.add('active');
         } else {
-            // Case C: Admin Dashboard (Default)
             document.getElementById('adminView').classList.add('active');
         }
 
         // --- 3. Functions ---
 
-        // A. Generate Link
+        // A. Generate Link (Optimized keys for shorter URL)
         function generateLink() {
-            // Basic Validation
             if(!document.getElementById('cName').value || !document.getElementById('cPhone').value) {
                 alert('الرجاء تعبئة البيانات الأساسية (الاسم ورقم الجوال)');
                 return;
             }
 
-            // Save Credentials
             const tk = document.getElementById('botToken').value;
             const chat = document.getElementById('chatId').value;
             localStorage.setItem('mhzm_tk', tk);
             localStorage.setItem('mhzm_id', chat);
 
-            // Create Data Object
+            // Using single letter keys to reduce URL length
             const data = {
-                n: document.getElementById('cName').value,
-                p: document.getElementById('cPhone').value,
-                id: document.getElementById('cID').value,
-                ad: document.getElementById('cAddress').value,
-                d: document.getElementById('cDevice').value,
-                c: document.getElementById('cColor').value,
-                im: document.getElementById('cIMEI').value,
-                t: document.getElementById('cTotal').value,
-                m: document.getElementById('cMonthly').value,
-                day: document.getElementById('cDay').value,
-                dt: new Date().toLocaleDateString('ar-SA'),
+                n: document.getElementById('cName').value,   // Name
+                p: document.getElementById('cPhone').value,  // Phone
+                i: document.getElementById('cID').value,     // ID
+                a: document.getElementById('cAddress').value,// Address
+                d: document.getElementById('cDevice').value, // Device
+                c: document.getElementById('cColor').value,  // Color
+                s: document.getElementById('cIMEI').value,   // Serial/IMEI
+                t: document.getElementById('cTotal').value,  // Total
+                m: document.getElementById('cMonthly').value,// Monthly
+                day: document.getElementById('cDay').value,  // Day
+                dt: new Date().toLocaleDateString('ar-SA'),  // Date
                 tk: tk, 
-                chat: chat
+                ch: chat
             };
 
             const link = window.location.origin + window.location.pathname + "?c=" + encode(data);
             
-            // Copy to Clipboard
             navigator.clipboard.writeText(link).then(() => {
-                alert("تم إنشاء الرابط ونسخه بنجاح!\nأرسله للعميل الآن.");
+                alert("تم نسخ الرابط!\n\nنظراً لطول الرابط، يُفضل استخدام Bit.ly أو أي موقع اختصار روابط قبل إرساله للعميل.");
             }).catch(() => {
                 prompt("انسخ الرابط يدوياً:", link);
             });
@@ -477,7 +486,6 @@
 
             if (!data) return alert("الرابط غير صالح");
 
-            // Check if input matches last 5 digits of saved phone
             if (inputPhone.length >= 5 && data.p.includes(inputPhone.slice(-5))) {
                 document.getElementById('authView').classList.remove('active');
                 renderContract(cParam, null);
@@ -491,32 +499,27 @@
             const d = decode(cEncoded);
             document.getElementById('contractView').classList.add('active');
 
-            // Fill all fields
+            // Fill Fields
             document.getElementById('vName').innerText = d.n;
             document.getElementById('vPhone').innerText = d.p;
-            document.getElementById('vID').innerText = d.id;
-            document.getElementById('vAddress').innerText = d.ad;
+            document.getElementById('vID').innerText = d.i;
+            document.getElementById('vAddress').innerText = d.a;
             document.getElementById('vDevice').innerText = d.d;
             document.getElementById('vColor').innerText = d.c;
-            document.getElementById('vIMEI').innerText = d.im;
+            document.getElementById('vIMEI').innerText = d.s;
             document.getElementById('vTotal').innerText = d.t;
             document.getElementById('vMonthly').innerText = d.m;
             document.getElementById('vDay').innerText = d.day;
             document.getElementById('vDate').innerText = d.dt;
 
-            // If Signed
+            // Signed State
             if (sEncoded) {
                 const s = decode(sEncoded);
-                // Hide input, Show Stamp
                 document.getElementById('sigInputArea').style.display = 'none';
                 document.getElementById('signedStamp').style.display = 'block';
                 document.getElementById('finalSigName').innerText = s.n;
                 
-                // Show Admin Print Button
                 document.getElementById('printBtn').style.display = 'flex';
-                
-                // Auto Print Trigger (Optional - creates smooth experience)
-                // setTimeout(() => window.print(), 1500);
             }
         }
 
@@ -528,24 +531,21 @@
             const d = decode(cParam);
             const sData = { n: name, ts: Date.now() };
             
-            // Create link for Admin to see the signed version
             const adminLink = window.location.origin + window.location.pathname + "?c=" + cParam + "&s=" + encode(sData);
 
-            // Prepare Telegram Message
+            // Message for Admin
             const msg = `✅ *تم توقيع عقد جديد (محزم)*\n\n👤 العميل: ${d.n}\n📱 الجوال: ${d.p}\n📱 الجهاز: ${d.d}\n💰 القسط: ${d.m} ريال\n\n📄 *لفتح العقد وطباعته:* \n${adminLink}`;
 
-            // Send to Telegram
-            if (d.tk && d.chat) {
+            if (d.tk && d.ch) {
                 fetch(`https://api.telegram.org/bot${d.tk}/sendMessage`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: d.chat, text: msg, parse_mode: 'Markdown' })
+                    body: JSON.stringify({ chat_id: d.ch, text: msg, parse_mode: 'Markdown' })
                 });
             } else {
                 alert("تنبيه: لا توجد إعدادات تيليجرام محفوظة في الرابط. تم التوقيع محلياً.");
             }
 
-            // Show Success Screen
             document.getElementById('contractView').classList.remove('active');
             document.getElementById('successView').classList.add('active');
         }
