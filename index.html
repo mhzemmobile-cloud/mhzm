@@ -156,6 +156,19 @@
         .info-item b { display: inline-block; min-width: 120px; color: #000; font-weight: 800; }
         .info-item span { color: #333; }
 
+        /* Payment Specific Grid Section */
+        .payment-summary {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            background: #eef7ff;
+            padding: 15px;
+            border: 1px solid #cce5ff;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
         /* Terms List - Professional Styling */
         .terms-box {
             margin-bottom: 30px;
@@ -245,6 +258,7 @@
 
             /* Layout Fixes */
             .info-grid { border: 2px solid #000 !important; background: none !important; margin-bottom: 30px !important; }
+            .payment-summary { border: 1px solid #999 !important; background: #f0f0f0 !important; }
             .terms-box li { margin-bottom: 15px !important; } /* Space out for 2 pages */
             
             /* Footer Visible on Print */
@@ -295,6 +309,9 @@
 
             <div class="form-row">
                 <div class="form-col"><label>إجمالي المبلغ (ريال)</label><input type="number" id="cTotal"></div>
+                <div class="form-col"><label>الدفعة الأولى (ريال)</label><input type="number" id="cDownPayment" value="0"></div>
+            </div>
+            <div class="form-row">
                 <div class="form-col"><label>القسط الشهري (ريال)</label><input type="number" id="cMonthly"></div>
                 <div class="form-col"><label>يوم الاستحقاق (مثلاً 27)</label><input type="number" id="cDay"></div>
             </div>
@@ -355,10 +372,13 @@
                     <div class="info-item"><b>الجهاز:</b> <span id="vDevice"></span></div>
                     <div class="info-item"><b>اللون:</b> <span id="vColor"></span></div>
                     <div class="info-item"><b>الرقم التسلسلي:</b> <span id="vIMEI"></span></div>
-                    <div class="info-item"><b>الاستحقاق الشهري:</b> يوم <span id="vDay"></span></div>
+                    <div class="info-item"><b>يوم الاستحقاق:</b> يوم <span id="vDay"></span> من كل شهر</div>
 
-                    <div class="info-item" style="grid-column: span 2; border-top: 2px dashed #ddd; padding-top: 10px; margin-top: 5px;">
-                        <b>تفاصيل السداد:</b> إجمالي <b><span id="vTotal"></span> ريال</b> &nbsp;/&nbsp; قسط شهري <b><span id="vMonthly"></span> ريال</b>
+                    <div class="payment-summary">
+                        <div class="info-item" style="border-bottom: none;"><b>إجمالي المبلغ:</b> <span id="vTotal"></span> ريال</div>
+                        <div class="info-item" style="border-bottom: none;"><b>الدفعة الأولى:</b> <span id="vDown"></span> ريال</div>
+                        <div class="info-item" style="border-bottom: none; border-top: 1px solid #ccc; padding-top: 5px;"><b>المبلغ المتبقي:</b> <span id="vRem"></span> ريال</div>
+                        <div class="info-item" style="border-bottom: none; border-top: 1px solid #ccc; padding-top: 5px;"><b>القسط الشهري:</b> <span id="vMonthly"></span> ريال</div>
                     </div>
                 </div>
 
@@ -367,7 +387,7 @@
                     <ol>
                         <li>يقر الطرف الثاني (العميل) باستلام الجهاز الموضح بياناته أعلاه جديداً ومغلفاً وبحالة سليمة مع كامل ملحقاته.</li>
                         <li>الجهاز مشمول بضمان الوكيل الرسمي لمدة سنتين (أو حسب نوع الجهاز) ضد العيوب المصنعية فقط.</li>
-                        <li>يلتزم العميل بسداد الأقساط الشهرية المتفق عليها في المواعيد المحددة أعلاه دون تأخير.</li>
+                        <li>يلتزم العميل بسداد الأقساط الشهرية للمبلغ المتبقي (<span id="vRemText"></span> ريال) في المواعيد المحددة أعلاه دون تأخير.</li>
                         <li>يحق للعميل في أي وقت سداد كامل المبلغ المتبقي دفعة واحدة وإغلاق المديونية دون أي رسوم إضافية.</li>
                         <li>يحق للعميل الحصول على سند قبض (إلكتروني أو ورقي) يثبت الدفع عند سداد أي قسط شهري.</li>
                         <li>المتجر يقدم المساعدة التقنية الأولية مجاناً، والعميل مسؤول مسؤولية تامة عن حساباته السرية (iCloud/Google).</li>
@@ -398,7 +418,7 @@
 
                 <div class="print-footer">
                     <p>متجر محزم للاتصالات - المملكة العربية السعودية - البريد الإلكتروني: info@mhzm.sa</p>
-                    <p>عنوان الوثيقة الإلكتروني: Mhzm-Contract-Sys-v1.0</p>
+                    <p>عنوان الوثيقة الإلكتروني: Mhzm-Contract-Sys-v1.2</p>
                 </div>
             </div>
         </div>
@@ -463,6 +483,7 @@
                 c: document.getElementById('cColor').value,  // Color
                 s: document.getElementById('cIMEI').value,   // Serial/IMEI
                 t: document.getElementById('cTotal').value,  // Total
+                dp: document.getElementById('cDownPayment').value || '0', // Down Payment
                 m: document.getElementById('cMonthly').value,// Monthly
                 day: document.getElementById('cDay').value,  // Day
                 dt: new Date().toLocaleDateString('ar-SA'),  // Date
@@ -499,6 +520,11 @@
             const d = decode(cEncoded);
             document.getElementById('contractView').classList.add('active');
 
+            // Calculate Remaining
+            const total = parseFloat(d.t) || 0;
+            const down = parseFloat(d.dp) || 0;
+            const remaining = total - down;
+
             // Fill Fields
             document.getElementById('vName').innerText = d.n;
             document.getElementById('vPhone').innerText = d.p;
@@ -507,10 +533,17 @@
             document.getElementById('vDevice').innerText = d.d;
             document.getElementById('vColor').innerText = d.c;
             document.getElementById('vIMEI').innerText = d.s;
-            document.getElementById('vTotal').innerText = d.t;
-            document.getElementById('vMonthly').innerText = d.m;
             document.getElementById('vDay').innerText = d.day;
             document.getElementById('vDate').innerText = d.dt;
+
+            // Payment Fields
+            document.getElementById('vTotal').innerText = total;
+            document.getElementById('vDown').innerText = down;
+            document.getElementById('vRem').innerText = remaining;
+            document.getElementById('vMonthly').innerText = d.m;
+            
+            // Text in Terms
+            document.getElementById('vRemText').innerText = remaining;
 
             // Signed State
             if (sEncoded) {
