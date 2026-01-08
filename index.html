@@ -3,306 +3,509 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عقد محزم الإلكتروني</title>
+    <title>منصة عقود محزم | Mhzm Contracts</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- DESIGN SYSTEM (Screen) --- */
-        :root { --primary: #0056b3; --bg: #121212; --surface: #1e1e1e; --text: #e0e0e0; }
-        
+        /* =========================================
+           1. BROSTEC CORE STYLE (Dark Mode UI)
+           ========================================= */
+        :root {
+            --primary: #0056b3;        /* Mhzm Royal Blue */
+            --primary-dark: #004494;
+            --accent: #00d4ff;
+            --bg-dark: #121212;
+            --surface: #1e1e1e;
+            --surface-2: #252525;
+            --text-main: #e0e0e0;
+            --border: #444;
+            --success: #28a745;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         
         body {
-            background-color: var(--bg); color: var(--text);
-            min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
         }
 
         .container {
-            width: 100%; max-width: 850px; background: var(--surface);
-            border-radius: 12px; border: 1px solid #333; overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 900px;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: relative;
         }
 
-        /* --- PRINT SYSTEM (Strict Paper Mode) --- */
-        @media print {
-            body { background: #fff !important; padding: 0 !important; margin: 0 !important; display: block !important; }
-            .container { 
-                box-shadow: none !important; border: none !important; 
-                width: 100% !important; max-width: 100% !important; 
-                background: #fff !important; color: #000 !important;
-                border-radius: 0 !important; overflow: visible !important;
-            }
-            .no-print, .section, #adminView, #authView, #successView, .btn, .header { display: none !important; }
-            
-            /* Force show Contract View */
-            #contractView { display: block !important; padding: 0 !important; margin: 0 !important; }
-            .contract-box { 
-                border: none !important; padding: 0 !important; margin: 0 !important; 
-                color: #000 !important; background: transparent !important;
-            }
-            
-            /* Logo adjustment for print */
-            .print-logo { display: block !important; height: 80px; margin: 0 auto 20px; }
-            
-            /* Texts */
-            h3, h4, p, li, span, div { color: #000 !important; text-shadow: none !important; }
-            .terms-list { page-break-inside: auto; }
-            
-            /* Stamp */
-            #signedStamp { display: flex !important; page-break-inside: avoid; }
+        /* --- Header --- */
+        .header {
+            background: #fff;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary);
+        }
+        .header img { 
+            height: 80px; 
+            display: block; 
+            margin: 0 auto; 
+        }
+        .header h2 {
+            color: var(--primary);
+            font-weight: 800;
+            margin-top: 10px;
+            font-size: 1.2rem;
         }
 
-        /* Screen Elements */
-        .header { background: #fff; padding: 15px; text-align: center; border-bottom: 4px solid var(--primary); }
-        .header img { height: 70px; display: block; margin: 0 auto; }
-        .print-logo { display: none; } /* Hidden on screen, visible on print */
+        /* --- Sections Control --- */
+        .section { display: none; padding: 30px; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
 
-        .section { display: none; padding: 25px; }
-        .section.active { display: block; }
-
-        input { width: 100%; padding: 12px; background: #252525; border: 1px solid #444; color: #fff; border-radius: 6px; margin-bottom: 15px; }
-        label { color: #00d4ff; display: block; margin-bottom: 5px; font-weight: bold; }
+        /* --- Input Forms --- */
+        .form-group { margin-bottom: 15px; }
+        .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
+        .form-col { flex: 1; min-width: 200px; }
         
-        .btn { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
-        
-        /* Contract Document Styling */
-        .contract-box { background: #fff; color: #000; padding: 30px; border-radius: 8px; line-height: 1.5; }
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8f9fa; padding: 15px; border: 1px solid #ddd; margin-bottom: 20px; border-radius: 6px; }
-        .data-item span { font-weight: 800; color: #000; }
-        
-        .stamp-box {
-            width: 140px; height: 140px; border: 3px solid var(--primary); border-radius: 50%;
-            margin: 20px auto; color: var(--primary); font-weight: 900;
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transform: rotate(-15deg); background: rgba(255,255,255,0.9);
+        label { 
+            display: block; margin-bottom: 8px; 
+            color: var(--accent); font-weight: 600; font-size: 0.9rem; 
         }
+        input, select {
+            width: 100%; padding: 12px; 
+            background: var(--surface-2);
+            border: 1px solid var(--border); 
+            border-radius: 6px;
+            color: #fff; font-size: 1rem;
+        }
+        input:focus { border-color: var(--primary); outline: none; }
 
-        /* Big Print Button for Admin */
-        #adminPrintBtn {
-            background: #28a745; margin-bottom: 20px; padding: 20px; font-size: 1.3rem;
+        /* --- Buttons --- */
+        .btn {
+            width: 100%; padding: 15px; 
+            background: var(--primary);
+            color: white; border: none; border-radius: 8px;
+            font-weight: 700; font-size: 1.1rem; 
+            cursor: pointer; margin-top: 10px;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            animation: pulse 2s infinite;
+            transition: 0.2s;
         }
-        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(40,167,69, 0.4);} 70% {box-shadow: 0 0 0 10px rgba(40,167,69, 0);} 100% {box-shadow: 0 0 0 0 rgba(40,167,69, 0);} }
+        .btn:hover { background: var(--primary-dark); }
+        .btn-print { background: #28a745; margin-bottom: 20px; font-size: 1.2rem; }
+
+        /* =========================================
+           2. CONTRACT PAPER STYLE (The Document)
+           ========================================= */
+        .contract-paper {
+            background: #fff;
+            color: #000;
+            padding: 40px;
+            border-radius: 4px;
+            line-height: 1.6;
+            font-size: 14px;
+            border: 1px solid #ccc;
+        }
+
+        .contract-header-print {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .contract-logo-print {
+            height: 90px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .info-item { font-size: 0.95rem; }
+        .info-item b { display: block; color: #000; font-size: 1.05rem; }
+
+        .terms-box {
+            margin-bottom: 30px;
+        }
+        .terms-box h4 { margin-bottom: 10px; text-decoration: underline; }
+        .terms-box ol { padding-right: 20px; }
+        .terms-box li { margin-bottom: 5px; text-align: justify; }
+
+        /* --- Signature Area --- */
+        .sig-input-area {
+            background: #f1f1f1;
+            padding: 20px;
+            border: 2px dashed #999;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .sig-input-area input {
+            background: #fff; color: #000; border: 1px solid #ccc; text-align: center; font-size: 1.2rem;
+        }
+
+        /* --- Digital Stamp --- */
+        .stamp-container {
+            display: none; /* Hidden by default until signed */
+            margin-top: 40px;
+            text-align: center;
+            width: 100%;
+        }
+        .stamp-seal {
+            width: 160px; height: 160px;
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            color: var(--primary);
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center;
+            font-weight: 900;
+            transform: rotate(-10deg);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 5px rgba(255,255,255,1);
+        }
+
+        /* =========================================
+           3. PRINT MEDIA QUERY (Crucial)
+           ========================================= */
+        @media print {
+            body { 
+                background: #fff !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                color: #000 !important;
+            }
+            .container { 
+                box-shadow: none !important; 
+                border: none !important; 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                margin: 0 !important;
+                background: #fff !important;
+            }
+            
+            /* Hide UI Elements */
+            .header, .no-print, .btn, .section, #adminView, #authView, #successView { 
+                display: none !important; 
+            }
+
+            /* Force Show Contract */
+            #contractView { 
+                display: block !important; 
+                padding: 0 !important; 
+                margin: 0 !important;
+            }
+            .contract-paper {
+                border: none !important;
+                padding: 0 !important;
+                background: transparent !important;
+            }
+            
+            /* Ensure Stamp and Text are visible */
+            .stamp-container { display: block !important; page-break-inside: avoid; }
+            .info-grid { border: 1px solid #ccc !important; background: none !important; }
+            li, p, h3, h4 { color: #000 !important; }
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
+        
         <div class="header no-print">
-            <img src="https://mhzm.sa/wp-content/webp-express/webp-images/uploads/2024/05/%D9%84%D9%88%D8%AC%D9%88.png.webp" alt="MHZM">
-            <h2 style="color:var(--primary); margin-top:5px;">نظام العقود</h2>
+            <img src="https://mhzm.sa/wp-content/webp-express/webp-images/uploads/2024/05/%D9%84%D9%88%D8%AC%D9%88.png.webp" alt="Mhzm Logo">
+            <h2>نظام العقود الإلكترونية</h2>
         </div>
 
         <div id="adminView" class="section">
-            <h3 style="color:#00d4ff; margin-bottom:15px;">إنشاء عقد جديد</h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div><label>اسم العميل</label><input type="text" id="cName"></div>
-                <div><label>رقم الجوال</label><input type="tel" id="cPhone" placeholder="05xxxxxxxx"></div>
+            <h3 style="color: var(--accent); margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;">
+                <i class="fas fa-edit"></i> إنشاء عقد جديد
+            </h3>
+
+            <div class="form-row">
+                <div class="form-col"><label>اسم العميل الرباعي</label><input type="text" id="cName"></div>
+                <div class="form-col"><label>رقم الجوال (هام للتحقق)</label><input type="tel" id="cPhone" placeholder="05xxxxxxxx"></div>
             </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div><label>الهوية</label><input type="text" id="cID"></div>
-                <div><label>العنوان</label><input type="text" id="cAddr"></div>
-            </div>
-            <label>الجهاز / الموديل / اللون</label><input type="text" id="cDevice">
-            <label>الرقم التسلسلي (IMEI)</label><input type="text" id="cIMEI">
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                <div><label>الإجمالي</label><input type="number" id="cTotal"></div>
-                <div><label>القسط</label><input type="number" id="cMonth"></div>
-                <div><label>الاستحقاق</label><input type="number" id="cDay" placeholder="يوم"></div>
+            <div class="form-row">
+                <div class="form-col"><label>رقم الهوية / الإقامة</label><input type="text" id="cID"></div>
+                <div class="form-col"><label>العنوان بالتفصيل</label><input type="text" id="cAddress"></div>
             </div>
 
-            <div style="background:#2a2a2a; padding:10px; margin-top:10px; border-radius:5px;">
-                <label style="font-size:0.8rem; color:#aaa;">إعدادات تيليجرام (مرة واحدة)</label>
-                <input type="text" id="botToken" placeholder="Bot Token" style="margin-bottom:5px;">
-                <input type="text" id="chatId" placeholder="Chat ID" style="margin-bottom:0;">
+            <div class="form-row">
+                <div class="form-col"><label>الجهاز والموديل</label><input type="text" id="cDevice"></div>
+                <div class="form-col"><label>اللون</label><input type="text" id="cColor"></div>
+                <div class="form-col"><label>الرقم المتسلسل (IMEI)</label><input type="text" id="cIMEI"></div>
             </div>
 
-            <button onclick="genLink()" class="btn">نسخ الرابط</button>
+            <div class="form-row">
+                <div class="form-col"><label>إجمالي المبلغ (ريال)</label><input type="number" id="cTotal"></div>
+                <div class="form-col"><label>القسط الشهري (ريال)</label><input type="number" id="cMonthly"></div>
+                <div class="form-col"><label>يوم الاستحقاق (مثلاً 27)</label><input type="number" id="cDay"></div>
+            </div>
+
+            <div style="background: #2a2a2a; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <label style="color: #fff;"><i class="fab fa-telegram"></i> إعدادات البوت (مطلوب لاستلام العقد)</label>
+                <div class="form-row">
+                    <div class="form-col"><input type="text" id="botToken" placeholder="Bot Token"></div>
+                    <div class="form-col"><input type="text" id="chatId" placeholder="Chat ID"></div>
+                </div>
+            </div>
+
+            <button onclick="generateLink()" class="btn"><i class="fas fa-link"></i> إنشاء رابط العقد ونسخه</button>
         </div>
 
         <div id="authView" class="section">
-            <div style="text-align:center; padding:40px 0;">
-                <h3>بوابة العملاء</h3>
-                <p style="color:#aaa; margin-bottom:20px;">أدخل رقم جوالك للاطلاع على العقد</p>
-                <input type="tel" id="authPhone" placeholder="05xxxxxxxx" style="text-align:center; max-width:300px; margin:0 auto 15px;">
-                <button onclick="verify()" class="btn" style="max-width:300px;">دخول</button>
+            <div style="text-align: center; padding: 50px 20px;">
+                <i class="fas fa-user-lock" style="font-size: 4rem; color: var(--accent); margin-bottom: 20px;"></i>
+                <h3>بوابة العملاء الآمنة</h3>
+                <p style="color: #aaa; margin-bottom: 20px;">فضلاً أدخل رقم الجوال المسجل في العقد للمتابعة</p>
+                <input type="tel" id="authPhone" placeholder="05xxxxxxxx" style="text-align: center; max-width: 300px; margin: 0 auto 20px; display: block;">
+                <button onclick="verifyClient()" class="btn" style="max-width: 300px; margin: 0 auto;">تسجيل الدخول</button>
             </div>
         </div>
 
         <div id="contractView" class="section">
             
-            <button id="adminPrintBtn" class="btn no-print" onclick="window.print()" style="display:none;">
-                <i class="fas fa-print"></i> اضغط هنا لطباعة العقد (PDF)
+            <button id="printBtn" class="btn btn-print no-print" onclick="window.print()" style="display: none;">
+                <i class="fas fa-print"></i> اضغط هنا لطباعة العقد أو حفظه PDF
             </button>
 
-            <div class="contract-box">
-                <img src="https://mhzm.sa/wp-content/webp-express/webp-images/uploads/2024/05/%D9%84%D9%88%D8%AC%D9%88.png.webp" class="print-logo" alt="Logo">
+            <div class="contract-paper">
+                <img src="https://mhzm.sa/wp-content/webp-express/webp-images/uploads/2024/05/%D9%84%D9%88%D8%AC%D9%88.png.webp" class="contract-logo-print" alt="Logo">
                 
-                <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:20px;">
-                    <h2 style="color:#000;">اتفاقية بيع بالتقسيط</h2>
-                    <p style="color:#333;">التاريخ: <span id="vDate"></span></p>
+                <div class="contract-header-print">
+                    <h2>اتفاقية بيع بالتقسيط</h2>
+                    <p>حرر هذا العقد بتاريخ: <span id="vDate"></span></p>
                 </div>
 
-                <div class="data-grid">
-                    <div>العميل: <span id="vName"></span></div>
-                    <div>الهوية: <span id="vID"></span></div>
-                    <div>الجوال: <span id="vPhone"></span></div>
-                    <div>العنوان: <span id="vAddr"></span></div>
-                    <div>الجهاز: <span id="vDevice"></span></div>
-                    <div>IMEI: <span id="vIMEI"></span></div>
-                    <div style="grid-column:span 2;">تفاصيل الدفع: إجمالي <span id="vTotal"></span> ريال / قسط شهري <span id="vMonth"></span> ريال (يوم <span id="vDay"></span>)</div>
+                <div class="info-grid">
+                    <div class="info-item">اسم العميل: <b id="vName"></b></div>
+                    <div class="info-item">رقم الهوية: <b id="vID"></b></div>
+                    <div class="info-item">رقم الجوال: <b id="vPhone"></b></div>
+                    <div class="info-item">العنوان: <b id="vAddress"></b></div>
+                    
+                    <div class="info-item">الجهاز: <b id="vDevice"></b></div>
+                    <div class="info-item">اللون: <b id="vColor"></b></div>
+                    <div class="info-item">الرقم التسلسلي: <b id="vIMEI"></b></div>
+                    <div class="info-item">يوم الاستحقاق: <b>يوم <span id="vDay"></span> من كل شهر</b></div>
+
+                    <div class="info-item" style="grid-column: span 2; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 5px;">
+                        تفاصيل السداد: إجمالي <b><span id="vTotal"></span> ريال</b> / قسط شهري <b><span id="vMonthly"></span> ريال</b>
+                    </div>
                 </div>
 
-                <div style="font-size:0.9rem; color:#000;">
-                    <h4 style="margin-bottom:10px; color:#000;">الشروط والأحكام:</h4>
-                    <ol class="terms-list" style="padding-right:20px;">
-                        <li>يقر العميل باستلام الجهاز جديداً وبحالة سليمة مع كامل ملحقاته.</li>
-                        <li>الجهاز مشمول بضمان الوكيل الرسمي لمدة سنتين ضد العيوب المصنعية.</li>
-                        <li>يلتزم العميل بسداد الأقساط في المواعيد المحددة أعلاه.</li>
-                        <li>يحق للعميل السداد المبكر لكامل المبلغ في أي وقت.</li>
-                        <li>يقر العميل بصحة بيانات التواصل ويلتزم بتحديثها عند التغيير.</li>
-                        <li>يعتبر الجهاز ملكاً للمتجر حتى سداد كامل الأقساط (شرط الاحتفاظ بالملكية).</li>
-                        <li>في حال التعثر عن سداد قسطين، يحل كامل المبلغ المتبقي فوراً.</li>
-                        <li>العميل مسؤول عن سوء الاستخدام (كسر/سوائل) ولا يعفيه ذلك من السداد.</li>
-                        <li>يحق للمتجر اتخاذ الإجراءات القانونية ورفع سمة "تعثر" في حال عدم السداد.</li>
-                        <li>التوقيع الإلكتروني أدناه ملزم قانونياً نافذ للجهالة.</li>
+                <div class="terms-box">
+                    <h4>الشروط والأحكام:</h4>
+                    <ol>
+                        <li>يقر الطرف الثاني (العميل) باستلام الجهاز الموضح بياناته أعلاه جديداً ومغلفاً وبحالة سليمة مع كامل ملحقاته.</li>
+                        <li>الجهاز مشمول بضمان الوكيل الرسمي لمدة سنتين (أو حسب نوع الجهاز) ضد العيوب المصنعية فقط.</li>
+                        <li>يلتزم العميل بسداد الأقساط الشهرية المتفق عليها في المواعيد المحددة أعلاه دون تأخير.</li>
+                        <li>يحق للعميل في أي وقت سداد كامل المبلغ المتبقي دفعة واحدة وإغلاق المديونية دون أي رسوم إضافية.</li>
+                        <li>يحق للعميل الحصول على سند قبض (إلكتروني أو ورقي) يثبت الدفع عند سداد أي قسط شهري.</li>
+                        <li>المتجر يقدم المساعدة التقنية الأولية مجاناً، والعميل مسؤول مسؤولية تامة عن حساباته السرية (iCloud/Google).</li>
+                        <li>يلتزم العميل بتحديث بياناته لدى المتجر فور تغيير رقم الجوال أو العنوان لضمان استمرارية التواصل.</li>
+                        <li>العميل هو المسؤول الأول والوحيد عن استخدام الجهاز، ولا يتحمل المتجر أي مسؤولية قانونية ناتجة عن سوء الاستخدام.</li>
+                        <li>يتعهد المتجر بالحفاظ على سرية بيانات العميل الشخصية وعدم مشاركتها مع أي طرف ثالث لأغراض تسويقية.</li>
+                        <li>الأعطال الناتجة عن الكسر أو السوائل تعتبر "سوء استخدام" وتخضع لرسوم الصيانة، ولا تعفي العميل من سداد الأقساط.</li>
+                        <li>يخضع الجهاز لسياسة الاستبدال والاسترجاع المعتمدة لدى وزارة التجارة في حال عدم فتح الغلاف أو وجود عيب مصنعي.</li>
+                        <li>يعتبر التوقيع الإلكتروني أدناه إقراراً قانونياً ونهائياً بالموافقة على صحة البيانات والالتزام بجدولة السداد.</li>
                     </ol>
                 </div>
 
-                <div id="sigBox" class="no-print" style="margin-top:20px; background:#f4f4f4; padding:20px; text-align:center; border:1px dashed #999;">
-                    <label style="color:#333;">للاعتماد، اكتب اسمك الثلاثي:</label>
-                    <input type="text" id="sigInput" style="background:#fff; color:#000; text-align:center; border:1px solid #ccc;">
-                    <button onclick="sign()" class="btn">توقيع واعتماد</button>
+                <div class="sig-input-area no-print" id="sigInputArea">
+                    <label style="color: #333; margin-bottom: 10px;">للموافقة والاعتماد، اكتب اسمك الثلاثي:</label>
+                    <input type="text" id="sigName" placeholder="الاسم هنا..." autocomplete="off">
+                    <button onclick="submitSignature()" class="btn" style="margin-top: 15px;">توقيع واعتماد العقد</button>
                 </div>
 
-                <div id="signedStamp" style="display:none; text-align:center; margin-top:30px;">
-                    <div class="stamp-box">
+                <div class="stamp-container" id="signedStamp">
+                    <div class="stamp-seal">
                         <span>متجر محزم</span>
-                        <small>MHZM STORE</small>
-                        <small style="border-top:1px solid; margin-top:2px;">تم التوقيع</small>
+                        <span style="font-size: 0.8rem;">MHZM STORE</span>
+                        <span style="font-size: 0.7rem; border-top: 1px solid; margin-top: 5px;">تم التوقيع</span>
                     </div>
-                    <p style="color:#000; margin-top:10px;">الموقع: <b id="finalSig"></b></p>
+                    <p>التوقيع الإلكتروني: <b id="finalSigName" style="font-family: 'Courier New';"></b></p>
+                    <p style="font-size: 0.8rem; color: #555;">IP Verified Signature</p>
                 </div>
             </div>
         </div>
 
-        <div id="successView" class="section" style="text-align:center;">
-            <h1 style="color:#28a745; font-size:4rem;">✓</h1>
-            <h3>تم التوقيع بنجاح</h3>
+        <div id="successView" class="section">
+            <div style="text-align: center; padding: 60px;">
+                <h1 style="color: var(--success); font-size: 5rem;">✓</h1>
+                <h3>تم التوقيع بنجاح</h3>
+                <p>تم إرسال النسخة المعتمدة للإدارة.</p>
+            </div>
         </div>
+
     </div>
 
     <script>
-        // --- Logic ---
-        const encode = (d) => btoa(unescape(encodeURIComponent(JSON.stringify(d))));
-        const decode = (s) => { try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch(e){ return null; } };
-        
+        // --- 1. Utilities ---
+        function encode(data) { return btoa(unescape(encodeURIComponent(JSON.stringify(data)))); }
+        function decode(str) { 
+            try { return JSON.parse(decodeURIComponent(escape(atob(str)))); } 
+            catch(e) { return null; } 
+        }
+
+        // --- 2. Initialization ---
         const params = new URLSearchParams(window.location.search);
-        const cVal = params.get('c');
-        const sVal = params.get('s');
+        const cParam = params.get('c'); // Contract Data
+        const sParam = params.get('s'); // Signature Data
 
-        // Restore Settings
-        if(localStorage.getItem('mtk')) document.getElementById('botToken').value = localStorage.getItem('mtk');
-        if(localStorage.getItem('mid')) document.getElementById('chatId').value = localStorage.getItem('mid');
+        // Load Cached Telegram Credentials
+        if(localStorage.getItem('mhzm_tk')) document.getElementById('botToken').value = localStorage.getItem('mhzm_tk');
+        if(localStorage.getItem('mhzm_id')) document.getElementById('chatId').value = localStorage.getItem('mhzm_id');
 
-        // Init View
-        if(cVal && sVal) {
-            renderContract(cVal, sVal);
-        } else if(cVal) {
+        // Determine which view to show
+        if (cParam && sParam) {
+            // Case A: Admin viewing a signed contract
+            renderContract(cParam, sParam);
+        } else if (cParam) {
+            // Case B: Client needs to login
             document.getElementById('authView').classList.add('active');
         } else {
+            // Case C: Admin Dashboard (Default)
             document.getElementById('adminView').classList.add('active');
         }
 
-        // Functions
-        function genLink() {
-            const tk = document.getElementById('botToken').value;
-            const id = document.getElementById('chatId').value;
-            localStorage.setItem('mtk', tk);
-            localStorage.setItem('mid', id);
+        // --- 3. Functions ---
 
+        // A. Generate Link
+        function generateLink() {
+            // Basic Validation
+            if(!document.getElementById('cName').value || !document.getElementById('cPhone').value) {
+                alert('الرجاء تعبئة البيانات الأساسية (الاسم ورقم الجوال)');
+                return;
+            }
+
+            // Save Credentials
+            const tk = document.getElementById('botToken').value;
+            const chat = document.getElementById('chatId').value;
+            localStorage.setItem('mhzm_tk', tk);
+            localStorage.setItem('mhzm_id', chat);
+
+            // Create Data Object
             const data = {
                 n: document.getElementById('cName').value,
                 p: document.getElementById('cPhone').value,
                 id: document.getElementById('cID').value,
-                ad: document.getElementById('cAddr').value,
+                ad: document.getElementById('cAddress').value,
                 d: document.getElementById('cDevice').value,
+                c: document.getElementById('cColor').value,
                 im: document.getElementById('cIMEI').value,
                 t: document.getElementById('cTotal').value,
-                m: document.getElementById('cMonth').value,
+                m: document.getElementById('cMonthly').value,
                 day: document.getElementById('cDay').value,
                 dt: new Date().toLocaleDateString('ar-SA'),
-                tk: tk, ch: id
+                tk: tk, 
+                chat: chat
             };
 
             const link = window.location.origin + window.location.pathname + "?c=" + encode(data);
-            navigator.clipboard.writeText(link).then(()=>alert("تم نسخ الرابط!"));
+            
+            // Copy to Clipboard
+            navigator.clipboard.writeText(link).then(() => {
+                alert("تم إنشاء الرابط ونسخه بنجاح!\nأرسله للعميل الآن.");
+            }).catch(() => {
+                prompt("انسخ الرابط يدوياً:", link);
+            });
         }
 
-        function verify() {
-            const ph = document.getElementById('authPhone').value.trim();
-            const d = decode(cVal);
-            if(d && ph.length >= 5 && d.p.includes(ph.slice(-5))) {
+        // B. Verify Client
+        function verifyClient() {
+            const inputPhone = document.getElementById('authPhone').value.trim();
+            const data = decode(cParam);
+
+            if (!data) return alert("الرابط غير صالح");
+
+            // Check if input matches last 5 digits of saved phone
+            if (inputPhone.length >= 5 && data.p.includes(inputPhone.slice(-5))) {
                 document.getElementById('authView').classList.remove('active');
-                renderContract(cVal, null);
+                renderContract(cParam, null);
             } else {
-                alert("رقم الجوال غير مطابق");
+                alert("رقم الجوال غير مطابق للسجلات.");
             }
         }
 
-        function renderContract(c, s) {
-            const d = decode(c);
+        // C. Render Contract
+        function renderContract(cEncoded, sEncoded) {
+            const d = decode(cEncoded);
             document.getElementById('contractView').classList.add('active');
-            
-            // Fill
+
+            // Fill all fields
             document.getElementById('vName').innerText = d.n;
-            document.getElementById('vID').innerText = d.id;
             document.getElementById('vPhone').innerText = d.p;
-            document.getElementById('vAddr').innerText = d.ad;
+            document.getElementById('vID').innerText = d.id;
+            document.getElementById('vAddress').innerText = d.ad;
             document.getElementById('vDevice').innerText = d.d;
+            document.getElementById('vColor').innerText = d.c;
             document.getElementById('vIMEI').innerText = d.im;
             document.getElementById('vTotal').innerText = d.t;
-            document.getElementById('vMonth').innerText = d.m;
+            document.getElementById('vMonthly').innerText = d.m;
             document.getElementById('vDay').innerText = d.day;
             document.getElementById('vDate').innerText = d.dt;
 
             // If Signed
-            if(s) {
-                const sData = decode(s);
-                document.getElementById('sigBox').style.display = 'none';
+            if (sEncoded) {
+                const s = decode(sEncoded);
+                // Hide input, Show Stamp
+                document.getElementById('sigInputArea').style.display = 'none';
                 document.getElementById('signedStamp').style.display = 'block';
-                document.getElementById('finalSig').innerText = sData.n;
+                document.getElementById('finalSigName').innerText = s.n;
                 
-                // Show Print Button & Auto Print
-                const printBtn = document.getElementById('adminPrintBtn');
-                printBtn.style.display = 'flex';
+                // Show Admin Print Button
+                document.getElementById('printBtn').style.display = 'flex';
                 
-                // Auto Print after 1 second (give time to render)
-                setTimeout(() => {
-                    // window.print(); // Uncomment this if you want it to force open immediately
-                }, 1000);
+                // Auto Print Trigger (Optional - creates smooth experience)
+                // setTimeout(() => window.print(), 1500);
             }
         }
 
-        function sign() {
-            const name = document.getElementById('sigInput').value;
-            if(name.length < 5) return alert("الاسم قصير");
-            
-            const d = decode(cVal);
-            const sData = { n: name, ts: Date.now() };
-            const fullLink = window.location.origin + window.location.pathname + "?c=" + cVal + "&s=" + encode(sData);
-            
-            const msg = `✅ *تم التوقيع (محزم)*\n👤 ${d.n}\n📱 ${d.d}\n\n📄 [اضغط هنا للطباعة](${fullLink})`;
+        // D. Submit Signature
+        function submitSignature() {
+            const name = document.getElementById('sigName').value;
+            if (name.length < 5) return alert("الرجاء كتابة الاسم الثلاثي");
 
-            if(d.tk && d.ch) {
-                fetch(`https://api.telegram.org/bot${d.tk}/sendMessage`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: d.ch, text: msg, parse_mode: 'Markdown' })
-                });
-            }
+            const d = decode(cParam);
+            const sData = { n: name, ts: Date.now() };
             
+            // Create link for Admin to see the signed version
+            const adminLink = window.location.origin + window.location.pathname + "?c=" + cParam + "&s=" + encode(sData);
+
+            // Prepare Telegram Message
+            const msg = `✅ *تم توقيع عقد جديد (محزم)*\n\n👤 العميل: ${d.n}\n📱 الجوال: ${d.p}\n📱 الجهاز: ${d.d}\n💰 القسط: ${d.m} ريال\n\n📄 *لفتح العقد وطباعته:* \n${adminLink}`;
+
+            // Send to Telegram
+            if (d.tk && d.chat) {
+                fetch(`https://api.telegram.org/bot${d.tk}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: d.chat, text: msg, parse_mode: 'Markdown' })
+                });
+            } else {
+                alert("تنبيه: لا توجد إعدادات تيليجرام محفوظة في الرابط. تم التوقيع محلياً.");
+            }
+
+            // Show Success Screen
             document.getElementById('contractView').classList.remove('active');
             document.getElementById('successView').classList.add('active');
         }
